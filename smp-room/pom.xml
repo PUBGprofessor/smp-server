@@ -63,7 +63,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.itning</groupId>
+<!--            <groupId>com.github.itning</groupId>-->
+            <groupId>top.itning</groupId>
             <artifactId>utils-spring-boot-starter</artifactId>
             <version>1.0.1-RELEASE</version>
         </dependency>
