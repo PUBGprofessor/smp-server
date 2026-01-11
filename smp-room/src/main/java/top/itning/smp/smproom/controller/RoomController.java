@@ -121,7 +121,7 @@ public class RoomController {
      */
     @PostMapping("/check")
     public ResponseEntity<?> check(@MustStudentLogin LoginUser loginUser,
-                                   @RequestParam("file") MultipartFile file,
+                                   @RequestParam(value = "file", required = false) MultipartFile file,
                                    @RequestParam("longitude") double longitude,
                                    @RequestParam("latitude") double latitude) throws IOException {
         return RestModel.created(roomService.check(file, loginUser, longitude, latitude));

@@ -29,6 +29,12 @@
 
 使用JWT令牌登陆
 
+核心就在于一个依赖：`spring-cloud-starter-netflix-zuul`
+
+这个项目使用的网关技术并不是新一代的 *Spring Cloud Gateway*，而是上一代的经典霸主 **Netflix Zuul**。
+
+这就解释了为什么没有配置文件也能转发——因为 **Zuul 默认自带“自动映射”功能**。
+
 ## **`smp-security` (认证授权服务)**
 
 - **角色**：安检员。
@@ -39,6 +45,13 @@
 
 - **角色**：监控室。
 - **作用**：使用 Spring Boot Admin 技术，图形化展示所有微服务的健康状态、内存使用情况、日志级别等。
+
+有了 **`smp-admin-server`**，打开浏览器访问它的页面，就能看到：
+
+- **健康状态**：所有微服务是 UP（绿灯）还是 DOWN（红灯）。
+- **JVM 监控**：内存占用、线程数量、垃圾回收情况（以图表形式展示）。
+- **日志查看**：可以直接在网页上实时看其他服务的 Log，不用去翻服务器文件。
+- **环境参数**：查看每个服务加载了哪些配置文件（Debug 神器）。
 
 ## **`smp-hystrix-dashboard` (熔断监控)**
 
@@ -302,7 +315,7 @@ CREATE TABLE `student_class` (
   `id` char(36) NOT NULL COMMENT '主键ID',
   `name` varchar(255) NOT NULL COMMENT '群组名/班级名',
   `class_num` varchar(255) NOT NULL COMMENT '班号(唯一)',
-  `teacher_user_ud` char(36) NOT NULL COMMENT '逻辑外键：关联User表的ID(教师)',
+  `teacher_user_id` char(36) NOT NULL COMMENT '逻辑外键：关联User表的ID(教师)',
   `gmt_create` datetime COMMENT '创建时间',
   `gmt_modified` datetime COMMENT '更新时间',
   PRIMARY KEY (`id`),
@@ -328,8 +341,8 @@ CREATE TABLE `student_class_check_meta_data` (
 -- 3. 创建学生签到记录表
 CREATE TABLE `student_class_check` (
   `id` char(36) NOT NULL COMMENT '主键ID',
-  `userId` char(36) NOT NULL COMMENT '逻辑外键：关联User表的ID(学生)',
-  `student_classId` char(36) NOT NULL COMMENT '逻辑外键：关联student_class表的ID',
+  `user_id` char(36) NOT NULL COMMENT '逻辑外键：关联User表的ID(学生)',
+  `student_class_id` char(36) NOT NULL COMMENT '逻辑外键：关联student_class表的ID',
   `student_classCheck_meta_data_id` char(36) NOT NULL COMMENT '逻辑外键：关联元数据表的ID',
   `check_time` datetime NOT NULL COMMENT '实际签到时间',
   `longitude` double ,
@@ -343,11 +356,11 @@ CREATE TABLE `student_class_check` (
 -- 4. 创建班级-学生关联表 (多对多关系表)
 CREATE TABLE `student_class_user` (
   `student_id` char(36) NOT NULL COMMENT '逻辑外键：关联User表的ID(学生)',
-  `student_classId` char(36) NOT NULL COMMENT '逻辑外键：关联student_class表的ID',
+  `student_class_id` char(36) NOT NULL COMMENT '逻辑外键：关联student_class表的ID',
   `gmt_create` datetime,
   `gmt_modified` datetime,
   -- 使用联合主键，确保一个学生在同一个班级里只能有一条记录
-  PRIMARY KEY (`student_id`, `student_classId`)
+  PRIMARY KEY (`student_id`, `student_class_id`)
   -- 已移除物理外键约束
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -505,3 +518,978 @@ VALUES (
 );
 ```
 
+
+
+
+
+# 接口文档
+
+## 1. 获取所有学生班级接口
+
+### 接口信息
+- **接口路径**: `GET /student_class_users`
+- **接口描述**: 获取当前登录学生加入的所有班级信息
+- **权限要求**: 学生登录 ([@MustStudentLogin](file://E:\VS%20code%20Project\Java\smp-server\smp-room\src\main\java\top\itning\smp\smproom\security\MustStudentLogin.java#L7-L12))
+
+### 请求参数:无
+
+
+
+### 响应示例
+```json
+{
+    "code": 200,
+    "msg": "查询成功",
+    "data": {
+        "content": [
+            {
+                "user": {
+                    "id": "student_li",
+                    "name": "李同学",
+                    "tel": "13800000002",
+                    "email": "li@smp.com",
+                    "username": "stu_li",
+                    "role": {
+                        "id": "1",
+                        "name": "学生",
+                        "gmtCreate": "2026-01-09T06:02:52.000+00:00",
+                        "gmtModified": "2026-01-09T06:02:52.000+00:00"
+                    },
+                    "studentUser": {
+                        "id": "student_li",
+                        "birthday": "2005-12-31T16:00:00.000+00:00",
+                        "sex": true,
+                        "age": 20,
+                        "studentId": "20260001",
+                        "belongCounselorId": "cbc6e729-ed21-11f0-9fe1-6c2408fbe0dd",
+                        "idCard": "110101200601010001",
+                        "politicalStatus": "群众",
+                        "ethnic": "汉族",
+                        "apartment": {
+                            "id": "apt_001",
+                            "name": "一号公寓",
+                            "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                            "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                        },
+                        "roomNum": "301",
+                        "address": "北京市海淀区",
+                        "bedNum": "1",
+                        "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                        "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                    },
+                    "gmtCreate": "2026-01-09T06:26:12.000+00:00",
+                    "gmtModified": "2026-01-09T06:26:12.000+00:00"
+                },
+                "studentClass": {
+                    "id": "1",
+                    "name": "一班",
+                    "classNum": "1",
+                    "user": {
+                        "id": "cbc6e729-ed21-11f0-9fe1-6c2408fbe0dd",
+                        "name": "系统管理员",
+                        "tel": "13800000000",
+                        "email": "admin@smp.com",
+                        "username": "admin",
+                        "role": {
+                            "id": "3",
+                            "name": "辅导员",
+                            "gmtCreate": "2026-01-09T06:02:52.000+00:00",
+                            "gmtModified": "2026-01-09T06:02:52.000+00:00"
+                        },
+                        "studentUser": null,
+                        "gmtCreate": "2026-01-09T06:09:45.000+00:00",
+                        "gmtModified": "2026-01-09T06:09:45.000+00:00"
+                    },
+                    "gmtCreate": "2026-01-11T07:00:44.000+00:00",
+                    "gmtModified": "2026-01-11T07:00:45.000+00:00"
+                },
+                "gmtCreate": "2026-01-11T06:59:57.000+00:00",
+                "gmtModified": "2026-01-11T06:59:58.000+00:00"
+            }
+        ],
+        "pageable": {
+            "sort": {
+                "sorted": true,
+                "unsorted": false,
+                "empty": false
+            },
+            "offset": 0,
+            "pageSize": 20,
+            "pageNumber": 0,
+            "unpaged": false,
+            "paged": true
+        },
+        "totalPages": 1,
+        "totalElements": 1,
+        "last": true,
+        "number": 0,
+        "size": 20,
+        "sort": {
+            "sorted": true,
+            "unsorted": false,
+            "empty": false
+        },
+        "numberOfElements": 1,
+        "first": true,
+        "empty": false
+    }
+}{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "content": [
+      {
+        "id": "class123",
+        "className": "计算机科学与技术1班",
+        "teacherName": "张老师",
+        "gmtCreate": "2023-01-01 10:00:00"
+      }
+    ],
+    "totalElements": 1,
+    "totalPages": 1,
+    "number": 0,
+    "size": 20
+  }
+}
+```
+
+
+## 2. 加入班级接口
+
+### 接口信息
+- **接口路径**: `POST /join_class`
+- **接口描述**: 学生加入指定班级
+- **权限要求**: 学生登录 ([@MustStudentLogin](file://E:\VS%20code%20Project\Java\smp-server\smp-room\src\main\java\top\itning\smp\smproom\security\MustStudentLogin.java#L7-L12))
+
+### 请求参数
+| 参数名       | 类型   | 必填 | 描述 |
+| ------------ | ------ | ---- | ---- |
+| **classNum** | String | 是   | 班号 |
+
+### 请求示例
+```http
+POST /join_class
+Content-Type: application/x-www-form-urlencoded
+
+classNum=CS202101
+```
+
+
+### 响应示例
+```json
+{
+    "code": 400,
+    "msg": "已经在这个班级了",
+    "data": null
+}
+or
+{
+    "code": 201,
+    "msg": "创建成功",
+    "data": {
+        "user": {
+            "id": "student_li",
+            "name": "李同学",
+            "tel": "13800000002",
+            "email": "li@smp.com",
+            "username": "stu_li",
+            "role": {
+                "id": "1",
+                "name": "学生",
+                "gmtCreate": "2026-01-09T06:02:52.000+00:00",
+                "gmtModified": "2026-01-09T06:02:52.000+00:00"
+            },
+            "studentUser": {
+                "id": "student_li",
+                "birthday": "2005-12-31T16:00:00.000+00:00",
+                "sex": true,
+                "age": 20,
+                "studentId": "20260001",
+                "belongCounselorId": "cbc6e729-ed21-11f0-9fe1-6c2408fbe0dd",
+                "idCard": "110101200601010001",
+                "politicalStatus": "群众",
+                "ethnic": "汉族",
+                "apartment": {
+                    "id": "apt_001",
+                    "name": "一号公寓",
+                    "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                    "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                },
+                "roomNum": "301",
+                "address": "北京市海淀区",
+                "bedNum": "1",
+                "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                "gmtModified": "2026-01-09T06:39:15.000+00:00"
+            },
+            "gmtCreate": "2026-01-09T06:26:12.000+00:00",
+            "gmtModified": "2026-01-09T06:26:12.000+00:00"
+        },
+        "studentClass": {
+            "id": "1",
+            "name": "一班",
+            "classNum": "1",
+            "user": {
+                "id": "cbc6e729-ed21-11f0-9fe1-6c2408fbe0dd",
+                "name": "系统管理员",
+                "tel": "13800000000",
+                "email": "admin@smp.com",
+                "username": "admin",
+                "role": {
+                    "id": "3",
+                    "name": "辅导员",
+                    "gmtCreate": "2026-01-09T06:02:52.000+00:00",
+                    "gmtModified": "2026-01-09T06:02:52.000+00:00"
+                },
+                "studentUser": null,
+                "gmtCreate": "2026-01-09T06:09:45.000+00:00",
+                "gmtModified": "2026-01-09T06:09:45.000+00:00"
+            },
+            "gmtCreate": "2026-01-11T07:00:44.000+00:00",
+            "gmtModified": "2026-01-11T07:00:45.000+00:00"
+        },
+        "gmtCreate": "2026-01-11T07:30:10.035+00:00",
+        "gmtModified": "2026-01-11T07:30:10.035+00:00"
+    }
+}
+```
+
+
+## 3. 学生退出班级接口
+
+### 接口信息
+- **接口路径**: `POST /quit_class`
+- **接口描述**: 学生退出指定班级
+- **权限要求**: 学生登录 ([@MustStudentLogin](file://E:\VS%20code%20Project\Java\smp-server\smp-room\src\main\java\top\itning\smp\smproom\security\MustStudentLogin.java#L7-L12))
+
+### 请求参数
+| 参数名         | 类型   | 必填 | 描述   |
+| -------------- | ------ | ---- | ------ |
+| studentClassId | String | 是   | 班级ID |
+
+### 请求示例
+```http
+POST /quit_class
+Content-Type: application/x-www-form-urlencoded
+
+studentClassId=class123456
+```
+
+
+### 响应示例
+```json
+{
+  "code": 204,
+  "message": "no content"
+}
+```
+
+
+## 注意事项
+- 所有接口均需携带有效的认证信息
+- 分页参数可选，不传时使用默认值
+- 响应状态码遵循RESTful规范
+- 错误情况会返回相应的错误码和消息
+
+## 4. 新增请假信息接口文档
+
+### 接口信息
+- **接口路径**: `POST /leave`
+- **接口描述**: 学生新增请假申请
+- **权限要求**: 学生登录 ([@MustStudentLogin](file://E:\VS%20code%20Project\Java\smp-server\smp-room\src\main\java\top\itning\smp\smproom\security\MustStudentLogin.java#L7-L12))
+
+### 请求参数
+| 参数名    | 类型   | 必填 | 格式       | 描述               |
+| --------- | ------ | ---- | ---------- | ------------------ |
+| startTime | Date   | 是   | yyyy-MM-dd | 请假开始时间       |
+| endTime   | Date   | 是   | yyyy-MM-dd | 请假结束时间       |
+| reason    | String | 是   | -          | 请假原因           |
+| leaveType | String | 是   | -          | 请假类型（枚举值） |
+
+### 请假类型说明
+- `SICK_LEAVE` - 病假
+- `AFFAIR_LEAVE` - 事假
+- `LEAVE_OF_ABSENCE` - 旷课假
+- [ROOM_LEAVE](file://E:\VS%20code%20Project\Java\smp-server\smp-leave\src\main\java\top\itning\smp\smpleave\entity\LeaveType.java#L15-L15) - 寝室假
+- [CLASS_LEAVE](file://E:\VS%20code%20Project\Java\smp-server\smp-leave\src\main\java\top\itning\smp\smpleave\entity\LeaveType.java#L11-L11) - 课假
+
+### 请求示例
+```http
+POST /leave
+Content-Type: application/x-www-form-urlencoded
+
+startTime=2023-12-01&endTime=2023-12-03&reason=生病需要治疗&leaveType=SICK_LEAVE
+```
+
+
+### 响应示例
+```json
+{
+    "code": 201,
+    "msg": "创建成功",
+    "data": {
+        "id": "0db6c7bd-5a51-4fb5-ade2-6837b02913d2",
+        "user": {
+            "id": "student_li",
+            "name": "李同学",
+            "tel": "13800000002",
+            "email": "li@smp.com",
+            "username": "stu_li",
+            "role": {
+                "id": "1",
+                "name": "学生",
+                "gmtCreate": "2026-01-09T06:02:52.000+00:00",
+                "gmtModified": "2026-01-09T06:02:52.000+00:00"
+            },
+            "studentUser": {
+                "id": "student_li",
+                "birthday": "2005-12-31T16:00:00.000+00:00",
+                "sex": true,
+                "age": 20,
+                "studentId": "20260001",
+                "belongCounselorId": "cbc6e729-ed21-11f0-9fe1-6c2408fbe0dd",
+                "idCard": "110101200601010001",
+                "politicalStatus": "群众",
+                "ethnic": "汉族",
+                "apartment": {
+                    "id": "apt_001",
+                    "name": "一号公寓",
+                    "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                    "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                },
+                "roomNum": "301",
+                "address": "北京市海淀区",
+                "bedNum": "1",
+                "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                "gmtModified": "2026-01-09T06:39:15.000+00:00"
+            },
+            "gmtCreate": "2026-01-09T06:26:12.000+00:00",
+            "gmtModified": "2026-01-09T06:26:12.000+00:00"
+        },
+        "startTime": "2026-01-03T16:00:00.000+00:00",
+        "endTime": "2026-01-06T15:59:59.000+00:00",
+        "leaveType": "ROOM_LEAVE",
+        "reason": "生病",
+        "status": null,
+        "leaveReasonList": null,
+        "gmtCreate": "2026-01-11T07:43:43.842+00:00",
+        "gmtModified": "2026-01-11T07:43:43.842+00:00"
+    }
+}
+or
+{
+    "code": 400,
+    "msg": "2026年01月04日至2026年01月06日您已经请过假了",
+    "data": null
+}
+```
+
+
+### 响应状态码
+- `201 Created` - 请假申请创建成功
+- `400 Bad Request` - 请求参数错误
+- `401 Unauthorized` - 未登录或权限不足
+- `403 Forbidden` - 权限不足（非学生身份）
+
+### 注意事项
+- 所有参数均为必填项
+- 时间格式必须为 `yyyy-MM-dd`
+- 请假类型必须为预定义的枚举值之一
+- 仅学生身份可发起请假申请
+- 请假申请创建后需等待辅导员审批
+
+## 5. 学生获取请假信息接口文档
+
+### 接口信息
+- **接口路径**: `GET /studentLeaves`
+- **接口描述**: 学生获取自己的请假信息列表
+- **权限要求**: 学生登录 ([@MustStudentLogin](file://E:\VS%20code%20Project\Java\smp-server\smp-room\src\main\java\top\itning\smp\smproom\security\MustStudentLogin.java#L7-L12))
+
+### 请求参数
+| 参数名 | 类型    | 必填 | 默认值           | 描述     |
+| ------ | ------- | ---- | ---------------- | -------- |
+| page   | Integer | 否   | 0                | 页码     |
+| size   | Integer | 否   | 20               | 每页数量 |
+| sort   | String  | 否   | gmtModified,desc | 排序字段 |
+
+### 响应示例
+```json
+{
+    "code": 200,
+    "msg": "查询成功",
+    "data": {
+        "content": [
+            {
+                "id": "0db6c7bd-5a51-4fb5-ade2-6837b02913d2",
+                "studentUser": {
+                    "id": "student_li",
+                    "name": "李同学",
+                    "tel": "13800000002",
+                    "email": "li@smp.com",
+                    "username": "stu_li",
+                    "role": {
+                        "id": "1",
+                        "name": "学生",
+                        "gmtCreate": "2026-01-09T06:02:52.000+00:00",
+                        "gmtModified": "2026-01-09T06:02:52.000+00:00"
+                    },
+                    "birthday": "2005-12-31T16:00:00.000+00:00",
+                    "sex": true,
+                    "age": 20,
+                    "studentId": "20260001",
+                    "belongCounselorId": "cbc6e729-ed21-11f0-9fe1-6c2408fbe0dd",
+                    "idCard": "110101200601010001",
+                    "politicalStatus": "群众",
+                    "ethnic": "汉族",
+                    "apartment": {
+                        "id": "apt_001",
+                        "name": "一号公寓",
+                        "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                        "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                    },
+                    "roomNum": "301",
+                    "bedNum": "1",
+                    "address": "北京市海淀区",
+                    "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                    "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                },
+                "startTime": "2026-01-03T16:00:00.000+00:00",
+                "endTime": "2026-01-06T15:59:59.000+00:00",
+                "leaveType": "ROOM_LEAVE",
+                "reason": "生病",
+                "status": null,
+                "leaveReasonList": [],
+                "gmtCreate": "2026-01-11T07:43:44.000+00:00",
+                "gmtModified": "2026-01-11T07:43:44.000+00:00"
+            },
+            {
+                "id": "leave_003",
+                "studentUser": {
+                    "id": "student_li",
+                    "name": "李同学",
+                    "tel": "13800000002",
+                    "email": "li@smp.com",
+                    "username": "stu_li",
+                    "role": {
+                        "id": "1",
+                        "name": "学生",
+                        "gmtCreate": "2026-01-09T06:02:52.000+00:00",
+                        "gmtModified": "2026-01-09T06:02:52.000+00:00"
+                    },
+                    "birthday": "2005-12-31T16:00:00.000+00:00",
+                    "sex": true,
+                    "age": 20,
+                    "studentId": "20260001",
+                    "belongCounselorId": "cbc6e729-ed21-11f0-9fe1-6c2408fbe0dd",
+                    "idCard": "110101200601010001",
+                    "politicalStatus": "群众",
+                    "ethnic": "汉族",
+                    "apartment": {
+                        "id": "apt_001",
+                        "name": "一号公寓",
+                        "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                        "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                    },
+                    "roomNum": "301",
+                    "bedNum": "1",
+                    "address": "北京市海淀区",
+                    "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                    "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                },
+                "startTime": "2026-01-10T00:00:00.000+00:00",
+                "endTime": "2026-01-12T10:00:00.000+00:00",
+                "leaveType": "CLASS_LEAVE",
+                "reason": "发烧感冒，头痛欲裂，无法上课",
+                "status": null,
+                "leaveReasonList": [],
+                "gmtCreate": "2026-01-09T06:27:36.000+00:00",
+                "gmtModified": "2026-01-09T06:27:36.000+00:00"
+            },
+            {
+                "id": "leave_004",
+                "studentUser": {
+                    "id": "student_li",
+                    "name": "李同学",
+                    "tel": "13800000002",
+                    "email": "li@smp.com",
+                    "username": "stu_li",
+                    "role": {
+                        "id": "1",
+                        "name": "学生",
+                        "gmtCreate": "2026-01-09T06:02:52.000+00:00",
+                        "gmtModified": "2026-01-09T06:02:52.000+00:00"
+                    },
+                    "birthday": "2005-12-31T16:00:00.000+00:00",
+                    "sex": true,
+                    "age": 20,
+                    "studentId": "20260001",
+                    "belongCounselorId": "cbc6e729-ed21-11f0-9fe1-6c2408fbe0dd",
+                    "idCard": "110101200601010001",
+                    "politicalStatus": "群众",
+                    "ethnic": "汉族",
+                    "apartment": {
+                        "id": "apt_001",
+                        "name": "一号公寓",
+                        "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                        "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                    },
+                    "roomNum": "301",
+                    "bedNum": "1",
+                    "address": "北京市海淀区",
+                    "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                    "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                },
+                "startTime": "2026-01-01T00:00:00.000+00:00",
+                "endTime": "2026-01-02T10:00:00.000+00:00",
+                "leaveType": "ROOM_LEAVE",
+                "reason": "家里有急事，需要回家一趟",
+                "status": true,
+                "leaveReasonList": [],
+                "gmtCreate": "2026-01-09T06:27:36.000+00:00",
+                "gmtModified": "2026-01-09T06:27:36.000+00:00"
+            },
+            {
+                "id": "leave_001",
+                "studentUser": {
+                    "id": "student_li",
+                    "name": "李同学",
+                    "tel": "13800000002",
+                    "email": "li@smp.com",
+                    "username": "stu_li",
+                    "role": {
+                        "id": "1",
+                        "name": "学生",
+                        "gmtCreate": "2026-01-09T06:02:52.000+00:00",
+                        "gmtModified": "2026-01-09T06:02:52.000+00:00"
+                    },
+                    "birthday": "2005-12-31T16:00:00.000+00:00",
+                    "sex": true,
+                    "age": 20,
+                    "studentId": "20260001",
+                    "belongCounselorId": "cbc6e729-ed21-11f0-9fe1-6c2408fbe0dd",
+                    "idCard": "110101200601010001",
+                    "politicalStatus": "群众",
+                    "ethnic": "汉族",
+                    "apartment": {
+                        "id": "apt_001",
+                        "name": "一号公寓",
+                        "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                        "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                    },
+                    "roomNum": "301",
+                    "bedNum": "1",
+                    "address": "北京市海淀区",
+                    "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                    "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                },
+                "startTime": "2026-01-10T00:00:00.000+00:00",
+                "endTime": "2026-01-12T10:00:00.000+00:00",
+                "leaveType": "CLASS_LEAVE",
+                "reason": "发烧感冒，头痛欲裂，无法上课",
+                "status": null,
+                "leaveReasonList": [],
+                "gmtCreate": "2026-01-09T06:26:12.000+00:00",
+                "gmtModified": "2026-01-09T06:26:12.000+00:00"
+            },
+            {
+                "id": "leave_002",
+                "studentUser": {
+                    "id": "student_li",
+                    "name": "李同学",
+                    "tel": "13800000002",
+                    "email": "li@smp.com",
+                    "username": "stu_li",
+                    "role": {
+                        "id": "1",
+                        "name": "学生",
+                        "gmtCreate": "2026-01-09T06:02:52.000+00:00",
+                        "gmtModified": "2026-01-09T06:02:52.000+00:00"
+                    },
+                    "birthday": "2005-12-31T16:00:00.000+00:00",
+                    "sex": true,
+                    "age": 20,
+                    "studentId": "20260001",
+                    "belongCounselorId": "cbc6e729-ed21-11f0-9fe1-6c2408fbe0dd",
+                    "idCard": "110101200601010001",
+                    "politicalStatus": "群众",
+                    "ethnic": "汉族",
+                    "apartment": {
+                        "id": "apt_001",
+                        "name": "一号公寓",
+                        "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                        "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                    },
+                    "roomNum": "301",
+                    "bedNum": "1",
+                    "address": "北京市海淀区",
+                    "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                    "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                },
+                "startTime": "2026-01-01T00:00:00.000+00:00",
+                "endTime": "2026-01-02T10:00:00.000+00:00",
+                "leaveType": "ROOM_LEAVE",
+                "reason": "家里有急事，需要回家一趟",
+                "status": true,
+                "leaveReasonList": [],
+                "gmtCreate": "2026-01-09T06:26:12.000+00:00",
+                "gmtModified": "2026-01-09T06:26:12.000+00:00"
+            }
+        ],
+        "pageable": {
+            "sort": {
+                "unsorted": false,
+                "sorted": true,
+                "empty": false
+            },
+            "offset": 0,
+            "pageNumber": 0,
+            "pageSize": 20,
+            "paged": true,
+            "unpaged": false
+        },
+        "totalElements": 5,
+        "totalPages": 1,
+        "last": true,
+        "number": 0,
+        "size": 20,
+        "sort": {
+            "unsorted": false,
+            "sorted": true,
+            "empty": false
+        },
+        "numberOfElements": 5,
+        "first": true,
+        "empty": false
+    }
+}
+```
+
+
+### 响应状态码
+- `200 OK` - 获取请假信息成功
+- `401 Unauthorized` - 未登录或权限不足
+- `403 Forbidden` - 权限不足（非学生身份）
+
+### 注意事项
+- 仅返回当前登录学生的请假记录
+- 支持分页查询，默认每页20条记录
+- 按修改时间倒序排列（最新的在前）
+- 不需要额外的请求参数，自动获取当前登录学生信息
+
+
+
+## 6. 检查是否允许打卡接口文档
+
+### 接口信息
+- **接口路径**: `GET /allow_check`
+- **接口描述**: 检查当前时间学生是否允许进行寝室打卡
+- **权限要求**: 学生登录 ([@MustStudentLogin](file://E:\VS%20code%20Project\Java\smp-server\smp-room\src\main\java\top\itning\smp\smproom\security\MustStudentLogin.java#L7-L12))
+
+### 请求参数
+| 参数名 | 类型 | 必填 | 描述                                   |
+| ------ | ---- | ---- | -------------------------------------- |
+| 无     | -    | -    | 无需额外参数，自动获取当前登录学生信息 |
+
+### 响应示例
+```json
+{
+    "code": 200,
+    "msg": "查询成功",
+    "data": true
+}
+```
+
+### 响应状态码
+- `200 OK` - 检查成功
+- `401 Unauthorized` - 未登录或权限不足
+- `403 Forbidden` - 权限不足（非学生身份）
+
+### 注意事项
+- 无需传递任何参数，系统自动获取当前登录学生信息
+- 返回当前时间是否在允许打卡的时间范围内
+- 用于前端判断是否显示打卡按钮
+
+## 7. 获取学生的寝室打卡信息接口文档
+
+### 接口信息
+- **接口路径**: `GET /checks`
+- **接口描述**: 获取当前登录学生的所有寝室打卡记录
+- **权限要求**: 学生登录 ([@MustStudentLogin](file://E:\VS%20code%20Project\Java\smp-server\smp-room\src\main\java\top\itning\smp\smproom\security\MustStudentLogin.java#L7-L12))
+
+### 请求参数
+| 参数名 | 类型    | 必填 | 默认值         | 描述                       |
+| ------ | ------- | ---- | -------------- | -------------------------- |
+| page   | Integer | 否   | 0              | 页码                       |
+| size   | Integer | 否   | 20             | 每页数量                   |
+| sort   | String  | 否   | checkTime,desc | 排序字段（按打卡时间倒序） |
+
+### 响应示例
+
+```json
+{
+    "code": 200,
+    "msg": "查询成功",
+    "data": {
+        "content": [
+            {
+                "id": "check_record_002",
+                "user": {
+                    "id": "student_li",
+                    "name": "李同学",
+                    "tel": "13800000002",
+                    "email": "li@smp.com",
+                    "username": "stu_li",
+                    "role": {
+                        "id": "1",
+                        "name": "学生",
+                        "gmtCreate": "2026-01-09T06:02:52.000+00:00",
+                        "gmtModified": "2026-01-09T06:02:52.000+00:00"
+                    },
+                    "studentUser": {
+                        "id": "student_li",
+                        "birthday": "2005-12-31T16:00:00.000+00:00",
+                        "sex": true,
+                        "age": 20,
+                        "studentId": "20260001",
+                        "belongCounselorId": "cbc6e729-ed21-11f0-9fe1-6c2408fbe0dd",
+                        "idCard": "110101200601010001",
+                        "politicalStatus": "群众",
+                        "ethnic": "汉族",
+                        "apartment": {
+                            "id": "apt_001",
+                            "name": "一号公寓",
+                            "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                            "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                        },
+                        "roomNum": "301",
+                        "address": "北京市海淀区",
+                        "bedNum": "1",
+                        "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                        "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                    },
+                    "gmtCreate": "2026-01-09T06:26:12.000+00:00",
+                    "gmtModified": "2026-01-09T06:26:12.000+00:00"
+                },
+                "checkTime": "2026-01-09T06:27:36.000+00:00",
+                "longitude": 116.4076,
+                "latitude": 39.9041,
+                "filenameExtension": "png",
+                "checkFaceSimilarity": 0.85,
+                "gmtCreate": "2026-01-09T06:27:36.000+00:00",
+                "gmtModified": "2026-01-09T06:27:36.000+00:00"
+            },
+            {
+                "id": "check_record_001",
+                "user": {
+                    "id": "student_li",
+                    "name": "李同学",
+                    "tel": "13800000002",
+                    "email": "li@smp.com",
+                    "username": "stu_li",
+                    "role": {
+                        "id": "1",
+                        "name": "学生",
+                        "gmtCreate": "2026-01-09T06:02:52.000+00:00",
+                        "gmtModified": "2026-01-09T06:02:52.000+00:00"
+                    },
+                    "studentUser": {
+                        "id": "student_li",
+                        "birthday": "2005-12-31T16:00:00.000+00:00",
+                        "sex": true,
+                        "age": 20,
+                        "studentId": "20260001",
+                        "belongCounselorId": "cbc6e729-ed21-11f0-9fe1-6c2408fbe0dd",
+                        "idCard": "110101200601010001",
+                        "politicalStatus": "群众",
+                        "ethnic": "汉族",
+                        "apartment": {
+                            "id": "apt_001",
+                            "name": "一号公寓",
+                            "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                            "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                        },
+                        "roomNum": "301",
+                        "address": "北京市海淀区",
+                        "bedNum": "1",
+                        "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                        "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                    },
+                    "gmtCreate": "2026-01-09T06:26:12.000+00:00",
+                    "gmtModified": "2026-01-09T06:26:12.000+00:00"
+                },
+                "checkTime": "2026-01-08T06:27:36.000+00:00",
+                "longitude": 116.4075,
+                "latitude": 39.9043,
+                "filenameExtension": "jpg",
+                "checkFaceSimilarity": 0.98,
+                "gmtCreate": "2026-01-09T06:27:36.000+00:00",
+                "gmtModified": "2026-01-09T06:27:36.000+00:00"
+            }
+        ],
+        "pageable": {
+            "sort": {
+                "sorted": true,
+                "unsorted": false,
+                "empty": false
+            },
+            "offset": 0,
+            "pageNumber": 0,
+            "pageSize": 20,
+            "paged": true,
+            "unpaged": false
+        },
+        "totalElements": 2,
+        "last": true,
+        "totalPages": 1,
+        "number": 0,
+        "size": 20,
+        "sort": {
+            "sorted": true,
+            "unsorted": false,
+            "empty": false
+        },
+        "numberOfElements": 2,
+        "first": true,
+        "empty": false
+    }
+}
+```
+
+
+### 响应状态码
+- `200 OK` - 获取打卡信息成功
+- `401 Unauthorized` - 未登录或权限不足
+- `403 Forbidden` - 权限不足（非学生身份）
+
+### 注意事项
+- 无需传递额外参数，自动获取当前登录学生信息
+- 支持分页查询，默认每页20条记录
+- 按打卡时间倒序排列（最新的打卡记录在前）
+- 仅返回当前登录学生的打卡记录
+
+
+
+
+
+## 8. 学生打卡接口文档
+
+### 接口信息
+- **接口路径**: `POST /check`
+- **接口描述**: 学生进行寝室打卡操作，需要上传照片和GPS位置信息
+- **权限要求**: 学生登录 ([@MustStudentLogin](file://E:\VS%20code%20Project\Java\smp-server\smp-room\src\main\java\top\itning\smp\smproom\security\MustStudentLogin.java#L7-L12))
+
+### 请求参数
+| 参数名    | 类型          | 必填 | 描述         |
+| --------- | ------------- | ---- | ------------ |
+| file      | MultipartFile | 是   | 打卡照片文件 |
+| longitude | double        | 是   | 打卡位置经度 |
+| latitude  | double        | 是   | 打卡位置纬度 |
+
+### 请求示例
+```http
+POST /check
+Content-Type: multipart/form-data
+
+file=<照片文件>&longitude=120.123456&latitude=30.123456
+```
+
+
+### 响应示例
+```json
+{
+    "code": 201,
+    "msg": "创建成功",
+    "data": {
+        "id": "2b021a98-f3b6-4850-a7dd-6d2d277ae962",
+        "user": {
+            "id": "student_li",
+            "name": "李同学",
+            "tel": "13800000002",
+            "email": "li@smp.com",
+            "username": "stu_li",
+            "role": {
+                "id": "1",
+                "name": "学生",
+                "gmtCreate": "2026-01-09T06:02:52.000+00:00",
+                "gmtModified": "2026-01-09T06:02:52.000+00:00"
+            },
+            "studentUser": {
+                "id": "student_li",
+                "birthday": "2005-12-31T16:00:00.000+00:00",
+                "sex": true,
+                "age": 20,
+                "studentId": "20260001",
+                "belongCounselorId": "cbc6e729-ed21-11f0-9fe1-6c2408fbe0dd",
+                "idCard": "110101200601010001",
+                "politicalStatus": "群众",
+                "ethnic": "汉族",
+                "apartment": {
+                    "id": "apt_001",
+                    "name": "一号公寓",
+                    "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                    "gmtModified": "2026-01-09T06:39:15.000+00:00"
+                },
+                "roomNum": "301",
+                "address": "北京市海淀区",
+                "bedNum": "1",
+                "gmtCreate": "2026-01-09T06:39:15.000+00:00",
+                "gmtModified": "2026-01-09T06:39:15.000+00:00"
+            },
+            "gmtCreate": "2026-01-09T06:26:12.000+00:00",
+            "gmtModified": "2026-01-09T06:26:12.000+00:00"
+        },
+        "checkTime": "2026-01-11T09:37:46.875+00:00",
+        "longitude": 1.0,
+        "latitude": 1.0,
+        "filenameExtension": "none",
+        "checkFaceSimilarity": 1.0,
+        "gmtCreate": "2026-01-11T09:37:46.908+00:00",
+        "gmtModified": "2026-01-11T09:37:46.908+00:00"
+    }
+}
+or
+{
+    "code": 400,
+    "msg": "您今天已经打过卡了，不能重复打卡",
+    "data": null
+}
+```
+
+
+### 响应状态码
+- `201 Created` - 打卡成功
+- `400 Bad Request` - 请求参数错误（位置不在允许范围内等）
+- `401 Unauthorized` - 未登录或权限不足
+- `403 Forbidden` - 权限不足（非学生身份）
+- `500 Internal Server Error` - 服务器内部错误
+
+### 注意事项
+- 需要上传照片文件和GPS经纬度坐标
+- 系统会验证当前位置是否在允许打卡的地理围栏内
+- 系统会验证当前时间是否在允许打卡的时间段内
+- 仅学生身份可进行打卡操作
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+"Authorization"
+```
+
+管理员："eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NjgxNTcwNDAsImxvZ2luVXNlciI6IntcIm5hbWVcIjpcIuezu-e7n-euoeeQhuWRmFwiLFwidXNlcm5hbWVcIjpcImFkbWluXCIsXCJyb2xlXCI6e1wiaWRcIjpcIjNcIixcIm5hbWVcIjpcIui-heWvvOWRmFwiLFwiZ210Q3JlYXRlXCI6MTc2NzkzODU3MjAwMCxcImdtdE1vZGlmaWVkXCI6MTc2NzkzODU3MjAwMH0sXCJlbWFpbFwiOlwiYWRtaW5Ac21wLmNvbVwiLFwidGVsXCI6XCIxMzgwMDAwMDAwMFwifSIsImlzcyI6Iml0bmluZyJ9.BwuqlITgx8jmHVaMhaSRRjZ1kuv_hq6qE76K8rmgRoo"
+
+学生：eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NjgxNTcxMjcsImxvZ2luVXNlciI6IntcIm5hbWVcIjpcIuadjuWQjOWtplwiLFwidXNlcm5hbWVcIjpcInN0dV9saVwiLFwicm9sZVwiOntcImlkXCI6XCIxXCIsXCJuYW1lXCI6XCLlrabnlJ9cIixcImdtdENyZWF0ZVwiOjE3Njc5Mzg1NzIwMDAsXCJnbXRNb2RpZmllZFwiOjE3Njc5Mzg1NzIwMDB9LFwiZW1haWxcIjpcImxpQHNtcC5jb21cIixcInRlbFwiOlwiMTM4MDAwMDAwMDJcIn0iLCJpc3MiOiJpdG5pbmcifQ.APhmJ2KgzaU9D0Eyk0fl5lrifsaIzwyfRTA1ttuyxLo

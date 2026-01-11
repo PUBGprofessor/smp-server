@@ -33,9 +33,11 @@ public class SecurityController {
      * @return ResponseEntity
      * @throws JsonProcessingException see {@link JsonProcessingException}
      */
+    // http://localhost:8888/security/login?username=admin&password=123456
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam("username") String username,
                                    @RequestParam("password") String password) throws JsonProcessingException {
+        // 处理登录
         return RestModel.ok(securityService.login(username, password));
     }
 

@@ -81,46 +81,119 @@ public class RoomServiceImpl implements RoomService {
         return studentRoomCheckDao.findAllByUser(user, pageable);
     }
 
+//    @Override
+//    public StudentRoomCheck check(MultipartFile file, LoginUser loginUser, double longitude, double latitude) throws IOException {
+//        // 修正坐标
+//        if (longitude > MAX_LONGITUDE || longitude < MIN_LONGITUDE || latitude > MAX_LATITUDE || latitude < MIN_LATITUDE) {
+//            throw new GpsException(longitude, latitude);
+//        }
+//        User user = infoClient.getUserInfoByUserName(loginUser.getUsername()).orElseThrow(() -> new UserNameDoesNotExistException("用户名不存在", HttpStatus.NOT_FOUND));
+//        if (leaveClient.isLeave(user.getUsername(), LeaveType.ROOM_LEAVE)) {
+//            throw new IllegalCheckException("您今天已经请假了，无需打卡");
+//        }
+//        Tuple2<Date, Date> dateRange = getDateRange(new Date());
+//        if (studentRoomCheckDao.existsByUserAndCheckTimeBetween(user, dateRange.getT1(), dateRange.getT2())) {
+//            throw new IllegalCheckException("您今天已经打过卡了，不能重复打卡");
+//        }
+//        if (!GpsUtils.isPtInPoly(longitude, latitude, roomCheckMetaDataService.getGpsRange(loginUser, true))) {
+//            throw new IllegalCheckException("打卡所在位置不在辅导员指定的区域内");
+//        }
+//        Face face = faceRepository.findById(user.getId()).orElseThrow(() -> new FileNotFoundException("人脸未注册，请注册人脸"));
+//        float compare = FaceHelper.compare(FaceHelper.crop(ImageIO.read(file.getInputStream())), face.getBufferedImage());
+//        logger.debug("user id: {} face compare: {} contrast accuracy threshold: {}", user.getId(), compare, customProperties.getContrastAccuracyThreshold());
+//        if (compare < customProperties.getContrastAccuracyThreshold()) {
+//            throw new IllegalCheckException("请自己打卡");
+//        }
+//        String filenameExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+//        if (filenameExtension == null) {
+//            logger.warn("use default extension for path {}", file.getOriginalFilename());
+//            filenameExtension = "jpg";
+//        }
+//        StudentRoomCheck studentRoomCheck = new StudentRoomCheck();
+//        studentRoomCheck.setUser(user);
+//        studentRoomCheck.setLongitude(longitude);
+//        studentRoomCheck.setLatitude(latitude);
+//        studentRoomCheck.setCheckTime(new Date());
+//        studentRoomCheck.setCheckFaceSimilarity(compare);
+//        studentRoomCheck.setFilenameExtension(filenameExtension);
+//        StudentRoomCheck saved = studentRoomCheckDao.save(studentRoomCheck);
+//        if (!StringUtils.hasText(saved.getId())) {
+//            throw new SavedException("数据库存储ID为空", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//        file.transferTo(new File(customProperties.getResourceLocation() + saved.getId() + "." + saved.getFilenameExtension()));
+//        return saved;
+//    }
+
     @Override
     public StudentRoomCheck check(MultipartFile file, LoginUser loginUser, double longitude, double latitude) throws IOException {
-        // 修正坐标
-        if (longitude > MAX_LONGITUDE || longitude < MIN_LONGITUDE || latitude > MAX_LATITUDE || latitude < MIN_LATITUDE) {
-            throw new GpsException(longitude, latitude);
-        }
-        User user = infoClient.getUserInfoByUserName(loginUser.getUsername()).orElseThrow(() -> new UserNameDoesNotExistException("用户名不存在", HttpStatus.NOT_FOUND));
+        // -----------------------------------------------------------------------
+        // 【修改点2】注释掉 GPS 边界检查（不做位置校验）
+        // -----------------------------------------------------------------------
+        // if (longitude > MAX_LONGITUDE || longitude < MIN_LONGITUDE || latitude > MAX_LATITUDE || latitude < MIN_LATITUDE) {
+        //     throw new GpsException(longitude, latitude);
+        // }
+
+        User user = infoClient.getUserInfoByUserName(loginUser.getUsername())
+                .orElseThrow(() -> new UserNameDoesNotExistException("用户名不存在", HttpStatus.NOT_FOUND));
+
+        // 保持：请假检查（请假了就不用打卡）
         if (leaveClient.isLeave(user.getUsername(), LeaveType.ROOM_LEAVE)) {
             throw new IllegalCheckException("您今天已经请假了，无需打卡");
         }
+
+        // 保持：重复打卡检查
         Tuple2<Date, Date> dateRange = getDateRange(new Date());
         if (studentRoomCheckDao.existsByUserAndCheckTimeBetween(user, dateRange.getT1(), dateRange.getT2())) {
             throw new IllegalCheckException("您今天已经打过卡了，不能重复打卡");
         }
-        if (!GpsUtils.isPtInPoly(longitude, latitude, roomCheckMetaDataService.getGpsRange(loginUser, true))) {
-            throw new IllegalCheckException("打卡所在位置不在辅导员指定的区域内");
+
+        // -----------------------------------------------------------------------
+        // 【修改点3】注释掉 GPS 区域检查（不做位置校验）
+        // -----------------------------------------------------------------------
+        // if (!GpsUtils.isPtInPoly(longitude, latitude, roomCheckMetaDataService.getGpsRange(loginUser, true))) {
+        //    throw new IllegalCheckException("打卡所在位置不在辅导员指定的区域内");
+        // }
+
+        // -----------------------------------------------------------------------
+        // 【修改点4】注释掉人脸识别逻辑（不做人脸校验）
+        // -----------------------------------------------------------------------
+        // Face face = faceRepository.findById(user.getId()).orElseThrow(() -> new FileNotFoundException("人脸未注册，请注册人脸"));
+        // float compare = FaceHelper.compare(FaceHelper.crop(ImageIO.read(file.getInputStream())), face.getBufferedImage());
+        // logger.debug("user id: {} face compare: {} contrast accuracy threshold: {}", user.getId(), compare, customProperties.getContrastAccuracyThreshold());
+        // if (compare < customProperties.getContrastAccuracyThreshold()) {
+        //     throw new IllegalCheckException("请自己打卡");
+        // }
+
+        // 【修改点5】处理文件后缀名逻辑
+        String filenameExtension = "none"; // 默认后缀，如果没传文件
+        if (file != null && !file.isEmpty()) {
+            filenameExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+            if (filenameExtension == null) {
+                logger.warn("use default extension for path {}", file.getOriginalFilename());
+                filenameExtension = "jpg";
+            }
         }
-        Face face = faceRepository.findById(user.getId()).orElseThrow(() -> new FileNotFoundException("人脸未注册，请注册人脸"));
-        float compare = FaceHelper.compare(FaceHelper.crop(ImageIO.read(file.getInputStream())), face.getBufferedImage());
-        logger.debug("user id: {} face compare: {} contrast accuracy threshold: {}", user.getId(), compare, customProperties.getContrastAccuracyThreshold());
-        if (compare < customProperties.getContrastAccuracyThreshold()) {
-            throw new IllegalCheckException("请自己打卡");
-        }
-        String filenameExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-        if (filenameExtension == null) {
-            logger.warn("use default extension for path {}", file.getOriginalFilename());
-            filenameExtension = "jpg";
-        }
+
         StudentRoomCheck studentRoomCheck = new StudentRoomCheck();
         studentRoomCheck.setUser(user);
         studentRoomCheck.setLongitude(longitude);
         studentRoomCheck.setLatitude(latitude);
         studentRoomCheck.setCheckTime(new Date());
-        studentRoomCheck.setCheckFaceSimilarity(compare);
+        // 【修改点6】人脸相似度直接给 1.0 (100%相似)，因为没有比对
+        studentRoomCheck.setCheckFaceSimilarity(1.0f);
         studentRoomCheck.setFilenameExtension(filenameExtension);
+
         StudentRoomCheck saved = studentRoomCheckDao.save(studentRoomCheck);
+
         if (!StringUtils.hasText(saved.getId())) {
             throw new SavedException("数据库存储ID为空", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        file.transferTo(new File(customProperties.getResourceLocation() + saved.getId() + "." + saved.getFilenameExtension()));
+
+        // 【修改点7】只有当确实上传了文件时，才保存到磁盘
+        if (file != null && !file.isEmpty()) {
+            file.transferTo(new File(customProperties.getResourceLocation() + saved.getId() + "." + saved.getFilenameExtension()));
+        }
+
         return saved;
     }
 

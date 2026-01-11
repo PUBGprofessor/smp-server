@@ -1,18 +1,5 @@
 # 基于Spring Cloud的学生管理平台
 
-[![GitHub stars](https://img.shields.io/github/stars/itning/smp-server.svg?style=social&label=Stars)](https://github.com/itning/smp-server/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/itning/smp-server.svg?style=social&label=Fork)](https://github.com/itning/smp-server/network/members)
-[![GitHub watchers](https://img.shields.io/github/watchers/itning/smp-server.svg?style=social&label=Watch)](https://github.com/itning/smp-server/watchers)
-[![GitHub followers](https://img.shields.io/github/followers/itning.svg?style=social&label=Follow)](https://github.com/itning?tab=followers)
-
-[![GitHub issues](https://img.shields.io/github/issues/itning/smp-server.svg)](https://github.com/itning/smp-server/issues)
-[![GitHub license](https://img.shields.io/github/license/itning/smp-server.svg)](https://github.com/itning/smp-server/blob/master/LICENSE)
-[![GitHub last commit](https://img.shields.io/github/last-commit/itning/smp-server.svg)](https://github.com/itning/smp-server/commits)
-[![GitHub release](https://img.shields.io/github/release/itning/smp-server.svg)](https://github.com/itning/smp-server/releases)
-[![GitHub repo size in bytes](https://img.shields.io/github/repo-size/itning/smp-server.svg)](https://github.com/itning/smp-server)
-[![Hits](https://hitcount.itning.top?u=itning&r=smp-server)](https://github.com/itning/hit-count)
-[![language](https://img.shields.io/badge/language-JAVA-green.svg)](https://github.com/itning/smp-server)
-
 ## 图
 
 ### 功能结构图
@@ -26,17 +13,11 @@
 ## 工程
 
 1. 前端项目
-   - [Vue.JS 实现](https://github.com/itning/smp-client)
-   - [Angular 实现](https://github.com/itning/smp-client-angular)
-2. Android移动端项目
-   - [教师端](https://github.com/itning/smp-android-teacher)
-   - [学生端](https://github.com/itning/smp-android)
+   - [Vue.JS 实现](https://github.com/PUBGprofessor/smp-client)
 3. 后端
-   - [Spring Cloud](https://github.com/itning/smp-server)
+   - [Spring Cloud](https://github.com/PUBGprofessor/smp-server)
 4. 人脸识别模型库
    - [smp-ext-lib](https://gitee.com/itning/smp-ext-lib)
-5. 统一配置中心数据存放仓库
-   - [smp-server-config](https://gitee.com/itning/smp-server-config)
 
 ## 依赖
 
@@ -124,9 +105,9 @@ spring.cloud.config.server.git.basedir=G:\\ProjectData\\IdeaProjects\\smp-server
 
 ### Excel模板文件
 
-[学生信息导入模板](https://github.com/itning/smp-server/blob/master/pic/%E5%AD%A6%E7%94%9F%E4%BF%A1%E6%81%AF%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx)
+学生信息导入模板
 
-[班级信息导入模板](https://github.com/itning/smp-server/blob/master/pic/%E7%8F%AD%E7%BA%A7%E4%BF%A1%E6%81%AF%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx)
+班级信息导入模板
 
 ## 项目打包
 
@@ -194,9 +175,3 @@ package.bat
 # 强制更新最新依赖，清除构建并构建
 ./gradlew clean build --refresh-dependencies
 ```
-
-## 版权声明
-
-该项目仅用于学习，禁止用于商业用途。
-
-项目是我个人毕业项目，**不建议作为您毕业项目来使用**。
