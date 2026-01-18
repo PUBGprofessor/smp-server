@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.dao;
+package com.pubg.smp.smpleave.dao;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

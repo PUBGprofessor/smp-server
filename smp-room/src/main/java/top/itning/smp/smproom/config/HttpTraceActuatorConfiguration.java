@@ -1,4 +1,4 @@
-package top.itning.smp.smproom.config;
+package com.pubg.smp.smproom.config;
 
 import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
 import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;

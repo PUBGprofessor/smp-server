@@ -1,4 +1,4 @@
-package top.itning.smp.smproom.client.entity;
+package com.pubg.smp.smproom.client.entity;
 
 /**
  * 请假类型(课假；寝室假；课假+寝室假)

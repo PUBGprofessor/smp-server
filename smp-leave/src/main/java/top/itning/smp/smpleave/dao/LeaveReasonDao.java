@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.dao;
+package com.pubg.smp.smpleave.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import top.itning.smp.smpleave.entity.LeaveReason;

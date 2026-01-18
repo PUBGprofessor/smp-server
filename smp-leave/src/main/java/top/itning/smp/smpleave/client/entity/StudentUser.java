@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.client.entity;
+package com.pubg.smp.smpleave.client.entity;
 
 import lombok.Data;
 

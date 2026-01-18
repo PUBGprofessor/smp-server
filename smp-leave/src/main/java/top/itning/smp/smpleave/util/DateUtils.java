@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.util;
+package com.pubg.smp.smpleave.util;
 
 import top.itning.utils.tuple.Tuple2;
 

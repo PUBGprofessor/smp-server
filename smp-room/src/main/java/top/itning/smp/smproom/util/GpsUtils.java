@@ -1,4 +1,4 @@
-package top.itning.smp.smproom.util;
+package com.pubg.smp.smproom.util;
 
 import java.util.List;
 

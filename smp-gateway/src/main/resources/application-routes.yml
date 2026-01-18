@@ -1,0 +1,74 @@
+spring:
+  cloud:
+    gateway:
+      globalcors: # 全局跨域
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*" # 适配 Spring Boot 3.x 推荐写法
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+              - PATCH
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 2592000 # 30天
+
+      routes: # 路由
+        - id: info-route
+          uri: lb://info
+          predicates:
+            - Path=/info/**
+          filters:
+            - StripPrefix=1
+
+        - id: check-route
+          uri: lb://class
+          predicates:
+            - Path=/class/**
+          filters:
+            - StripPrefix=1
+
+        - id: leave-route
+          uri: lb://leave
+          predicates:
+            - Path=/leave/**
+          filters:
+            - StripPrefix=1
+
+        - id: statistics-route
+          uri: lb://statistics
+          predicates:
+            - Path=/statistics/**
+          filters:
+            - StripPrefix=1
+
+        - id: admin-server-route
+          uri: lb://admin
+          predicates:
+            - Path=/admin/**
+          filters:
+            - StripPrefix=1
+
+        - id: room-route
+          uri: lb://room
+          predicates:
+            - Path=/room/**
+          filters:
+            - StripPrefix=1
+
+        - id: security-route
+          uri: lb://security
+          predicates:
+            - Path=/security/**
+          filters:
+            - StripPrefix=1
+
+        - id: default-bing-route
+          uri: https://cn.bing.com
+          predicates:
+            - Path=/**
+          order: 10000

@@ -1,4 +1,4 @@
-package top.itning.smp.smpinfo;
+package com.pubg.smp.smpinfo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;

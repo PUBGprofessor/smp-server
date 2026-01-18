@@ -1,4 +1,4 @@
-package top.itning.smp.smpsecurity.util;
+package com.pubg.smp.smpsecurity.util;
 
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;

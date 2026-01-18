@@ -1,4 +1,4 @@
-package top.itning.smp.smpsecurity.service;
+package com.pubg.smp.smpsecurity.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import top.itning.smp.smpsecurity.security.LoginUser;

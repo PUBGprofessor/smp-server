@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave;
+package com.pubg.smp.smpleave;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

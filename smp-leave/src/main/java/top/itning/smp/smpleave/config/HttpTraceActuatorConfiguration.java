@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.config;
+package com.pubg.smp.smpleave.config;
 
 import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
 import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;

@@ -1,4 +1,4 @@
-package top.itning.smp.smpsecurity.exception;
+package com.pubg.smp.smpsecurity.exception;
 
 import org.springframework.http.HttpStatus;
 

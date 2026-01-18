@@ -1,4 +1,4 @@
-package top.itning.smp.smpinfo.dao;
+package com.pubg.smp.smpinfo.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import top.itning.smp.smpinfo.entity.Role;

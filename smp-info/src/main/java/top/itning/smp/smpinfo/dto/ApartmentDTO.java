@@ -1,4 +1,4 @@
-package top.itning.smp.smpinfo.dto;
+package com.pubg.smp.smpinfo.dto;
 
 import lombok.Data;
 

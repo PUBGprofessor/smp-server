@@ -1,4 +1,4 @@
-package top.itning.smp.smpsecurity.entity;
+package com.pubg.smp.smpsecurity.entity;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package top.itning.smp.smpsecurity.config;
+package com.pubg.smp.smpsecurity.config;
 
 import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
 import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;

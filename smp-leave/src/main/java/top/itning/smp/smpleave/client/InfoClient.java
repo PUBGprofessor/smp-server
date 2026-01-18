@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.client;
+package com.pubg.smp.smpleave.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;

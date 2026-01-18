@@ -1,4 +1,4 @@
-package top.itning.smp.smpstatistics;
+package com.pubg.smp.smpstatistics;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

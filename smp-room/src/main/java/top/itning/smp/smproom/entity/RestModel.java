@@ -1,4 +1,4 @@
-package top.itning.smp.smproom.entity;
+package com.pubg.smp.smproom.entity;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

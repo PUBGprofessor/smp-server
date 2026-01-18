@@ -1,4 +1,4 @@
-package top.itning.smp.smpsecurity.client.entity;
+package com.pubg.smp.smpsecurity.client.entity;
 
 import lombok.Data;
 

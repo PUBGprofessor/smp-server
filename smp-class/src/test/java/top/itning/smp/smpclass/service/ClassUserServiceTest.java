@@ -1,4 +1,4 @@
-package top.itning.smp.smpclass.service;
+package com.pubg.smp.smpclass.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

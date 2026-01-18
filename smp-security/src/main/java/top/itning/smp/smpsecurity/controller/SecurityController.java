@@ -1,4 +1,4 @@
-package top.itning.smp.smpsecurity.controller;
+package com.pubg.smp.smpsecurity.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;

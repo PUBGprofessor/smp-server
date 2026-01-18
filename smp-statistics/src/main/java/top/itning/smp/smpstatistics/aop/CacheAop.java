@@ -1,4 +1,4 @@
-package top.itning.smp.smpstatistics.aop;
+package com.pubg.smp.smpstatistics.aop;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;

@@ -1,4 +1,4 @@
-package top.itning.smp.smproom;
+package com.pubg.smp.smproom;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package top.itning.smp.smpsecurity;
+package com.pubg.smp.smpsecurity;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;

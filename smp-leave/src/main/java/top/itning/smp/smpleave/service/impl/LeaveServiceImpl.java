@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.service.impl;
+package com.pubg.smp.smpleave.service.impl;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;

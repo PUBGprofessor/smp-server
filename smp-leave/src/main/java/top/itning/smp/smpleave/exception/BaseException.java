@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.exception;
+package com.pubg.smp.smpleave.exception;
 
 import org.springframework.http.HttpStatus;
 

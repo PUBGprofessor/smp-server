@@ -1,4 +1,4 @@
-package top.itning.smp.smpinfo.service;
+package com.pubg.smp.smpinfo.service;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;

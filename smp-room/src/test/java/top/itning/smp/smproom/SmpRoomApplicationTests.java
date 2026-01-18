@@ -1,4 +1,4 @@
-package top.itning.smp.smproom;
+package com.pubg.smp.smproom;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

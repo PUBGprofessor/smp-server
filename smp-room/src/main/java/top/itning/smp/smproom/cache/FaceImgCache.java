@@ -1,4 +1,4 @@
-package top.itning.smp.smproom.cache;
+package com.pubg.smp.smproom.cache;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

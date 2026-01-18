@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave;
+package com.pubg.smp.smpleave;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;

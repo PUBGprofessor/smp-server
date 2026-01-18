@@ -1,4 +1,4 @@
-package top.itning.smp.smproom.repository;
+package com.pubg.smp.smproom.repository;
 
 import com.google.common.cache.LoadingCache;
 import lombok.SneakyThrows;

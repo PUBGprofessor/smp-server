@@ -1,4 +1,4 @@
-package top.itning.smp.smpsecurity.security;
+package com.pubg.smp.smpsecurity.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

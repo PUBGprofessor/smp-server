@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.security;
+package com.pubg.smp.smpleave.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

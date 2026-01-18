@@ -1,4 +1,4 @@
-package top.itning.smp.smpstatistics.util;
+package com.pubg.smp.smpstatistics.util;
 
 import top.itning.utils.tuple.Tuple2;
 

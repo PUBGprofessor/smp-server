@@ -1,4 +1,4 @@
-package top.itning.smp.smpinfo;
+package com.pubg.smp.smpinfo;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

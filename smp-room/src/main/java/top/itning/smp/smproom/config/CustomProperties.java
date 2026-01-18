@@ -1,4 +1,4 @@
-package top.itning.smp.smproom.config;
+package com.pubg.smp.smproom.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

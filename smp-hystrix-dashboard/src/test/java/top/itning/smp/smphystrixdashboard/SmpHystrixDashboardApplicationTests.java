@@ -1,4 +1,4 @@
-package top.itning.smp.smphystrixdashboard;
+package com.pubg.smp.smphystrixdashboard;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

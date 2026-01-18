@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.service;
+package com.pubg.smp.smpleave.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

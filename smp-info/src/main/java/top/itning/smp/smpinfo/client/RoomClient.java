@@ -1,4 +1,4 @@
-package top.itning.smp.smpinfo.client;
+package com.pubg.smp.smpinfo.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;

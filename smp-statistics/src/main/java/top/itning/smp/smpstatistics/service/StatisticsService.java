@@ -1,4 +1,4 @@
-package top.itning.smp.smpstatistics.service;
+package com.pubg.smp.smpstatistics.service;
 
 import top.itning.smp.smpstatistics.entity.*;
 import top.itning.smp.smpstatistics.security.LoginUser;

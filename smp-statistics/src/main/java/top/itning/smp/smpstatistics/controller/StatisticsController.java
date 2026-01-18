@@ -1,4 +1,4 @@
-package top.itning.smp.smpstatistics.controller;
+package com.pubg.smp.smpstatistics.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;

@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.security;
+package com.pubg.smp.smpleave.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

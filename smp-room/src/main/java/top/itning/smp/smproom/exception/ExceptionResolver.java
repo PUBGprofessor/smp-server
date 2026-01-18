@@ -1,4 +1,4 @@
-package top.itning.smp.smproom.exception;
+package com.pubg.smp.smproom.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package top.itning.smp.smpstatistics.service.impl;
+package com.pubg.smp.smpstatistics.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

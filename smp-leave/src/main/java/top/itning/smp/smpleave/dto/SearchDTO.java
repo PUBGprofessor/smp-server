@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.dto;
+package com.pubg.smp.smpleave.dto;
 
 import lombok.Data;
 import top.itning.smp.smpleave.entity.LeaveType;

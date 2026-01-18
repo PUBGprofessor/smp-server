@@ -1,4 +1,4 @@
-package top.itning.smp.smproom.controller;
+package com.pubg.smp.smproom.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;

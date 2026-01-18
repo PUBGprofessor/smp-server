@@ -1,4 +1,4 @@
-package top.itning.smp.smpinfo.util;
+package com.pubg.smp.smpinfo.util;
 
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;

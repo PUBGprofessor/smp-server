@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.security;
+package com.pubg.smp.smpleave.security;
 
 import lombok.Data;
 

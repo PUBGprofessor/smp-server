@@ -1,4 +1,4 @@
-package top.itning.smp.smpinfo.exception;
+package com.pubg.smp.smpinfo.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

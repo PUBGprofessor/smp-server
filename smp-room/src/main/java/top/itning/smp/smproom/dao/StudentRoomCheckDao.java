@@ -1,4 +1,4 @@
-package top.itning.smp.smproom.dao;
+package com.pubg.smp.smproom.dao;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,4 +1,4 @@
-package top.itning.smp.smpsecurity.util;
+package com.pubg.smp.smpsecurity.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

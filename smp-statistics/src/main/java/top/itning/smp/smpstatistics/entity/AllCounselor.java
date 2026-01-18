@@ -1,4 +1,4 @@
-package top.itning.smp.smpstatistics.entity;
+package com.pubg.smp.smpstatistics.entity;
 
 import lombok.Data;
 import top.itning.smp.smpstatistics.client.entity.User;

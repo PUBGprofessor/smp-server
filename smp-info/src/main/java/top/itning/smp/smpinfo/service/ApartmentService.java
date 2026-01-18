@@ -1,4 +1,4 @@
-package top.itning.smp.smpinfo.service;
+package com.pubg.smp.smpinfo.service;
 
 import top.itning.smp.smpinfo.dto.ApartmentDTO;
 import top.itning.smp.smpinfo.entity.Apartment;

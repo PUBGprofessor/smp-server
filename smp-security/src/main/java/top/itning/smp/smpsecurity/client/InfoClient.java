@@ -1,4 +1,4 @@
-package top.itning.smp.smpsecurity.client;
+package com.pubg.smp.smpsecurity.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;

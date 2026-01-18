@@ -1,4 +1,4 @@
-package top.itning.smp.smproom.client.entity;
+package com.pubg.smp.smproom.client.entity;
 
 import lombok.Data;
 import top.itning.smp.smproom.entity.StudentUser;

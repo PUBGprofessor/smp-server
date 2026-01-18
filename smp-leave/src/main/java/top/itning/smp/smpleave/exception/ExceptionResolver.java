@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.exception;
+package com.pubg.smp.smpleave.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

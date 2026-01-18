@@ -1,4 +1,4 @@
-package top.itning.smp.smpinfo.security;
+package com.pubg.smp.smpinfo.security;
 
 import lombok.Data;
 

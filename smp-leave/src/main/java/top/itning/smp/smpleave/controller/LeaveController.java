@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.controller;
+package com.pubg.smp.smpleave.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;

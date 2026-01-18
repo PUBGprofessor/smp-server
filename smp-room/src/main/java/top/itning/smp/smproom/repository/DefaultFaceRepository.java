@@ -1,4 +1,4 @@
-package top.itning.smp.smproom.repository;
+package com.pubg.smp.smproom.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;

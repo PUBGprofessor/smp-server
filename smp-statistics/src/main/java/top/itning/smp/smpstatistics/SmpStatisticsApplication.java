@@ -1,4 +1,4 @@
-package top.itning.smp.smpstatistics;
+package com.pubg.smp.smpstatistics;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;

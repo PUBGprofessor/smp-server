@@ -1,4 +1,4 @@
-package top.itning.smp.smpinfo.service.impl;
+package com.pubg.smp.smpinfo.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;

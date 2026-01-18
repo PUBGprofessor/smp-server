@@ -1,4 +1,4 @@
-package top.itning.smp.smpinfo.dao;
+package com.pubg.smp.smpinfo.dao;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

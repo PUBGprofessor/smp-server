@@ -1,4 +1,4 @@
-package top.itning.smp.smproom.repository;
+package com.pubg.smp.smproom.repository;
 
 import top.itning.smp.smproom.entity.Face;
 

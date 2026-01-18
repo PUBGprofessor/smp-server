@@ -1,4 +1,4 @@
-package top.itning.smp.smpleave.util;
+package com.pubg.smp.smpleave.util;
 
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
