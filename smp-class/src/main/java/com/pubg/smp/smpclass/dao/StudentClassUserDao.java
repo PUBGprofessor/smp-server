@@ -3,10 +3,10 @@ package com.pubg.smp.smpclass.dao;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import top.itning.smp.smpclass.entity.StudentClass;
-import top.itning.smp.smpclass.entity.StudentClassUser;
-import top.itning.smp.smpclass.entity.StudentGroupPrimaryKey;
-import top.itning.smp.smpclass.entity.User;
+import com.pubg.smp.smpclass.entity.StudentClass;
+import com.pubg.smp.smpclass.entity.StudentClassUser;
+import com.pubg.smp.smpclass.entity.StudentGroupPrimaryKey;
+import com.pubg.smp.smpclass.entity.User;
 
 import java.util.List;
 

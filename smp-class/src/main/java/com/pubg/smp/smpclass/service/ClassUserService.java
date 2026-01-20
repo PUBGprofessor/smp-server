@@ -3,12 +3,12 @@ package com.pubg.smp.smpclass.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
-import top.itning.smp.smpclass.client.entity.LeaveDTO;
-import top.itning.smp.smpclass.dto.StudentClassDTO;
-import top.itning.smp.smpclass.entity.StudentClass;
-import top.itning.smp.smpclass.entity.StudentClassCheckMetaData;
-import top.itning.smp.smpclass.entity.StudentClassUser;
-import top.itning.smp.smpclass.security.LoginUser;
+import com.pubg.smp.smpclass.client.entity.LeaveDTO;
+import com.pubg.smp.smpclass.dto.StudentClassDTO;
+import com.pubg.smp.smpclass.entity.StudentClass;
+import com.pubg.smp.smpclass.entity.StudentClassCheckMetaData;
+import com.pubg.smp.smpclass.entity.StudentClassUser;
+import com.pubg.smp.smpclass.security.LoginUser;
 
 import java.io.IOException;
 import java.util.Date;

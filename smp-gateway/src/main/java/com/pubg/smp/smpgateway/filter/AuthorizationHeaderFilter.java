@@ -16,8 +16,10 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,16 +62,23 @@ public class AuthorizationHeaderFilter implements GlobalFilter, Ordered {
         try {
             // 4. 解析 JWT
             LoginUser loginUser = JwtUtils.getLoginUser(authHeader);
-
+//            System.out.println(loginUser.getRole().getId());
             // 5. 信息透传 (Gateway 中建议使用 Header 传递，而不是修改 Query 参数)
-            ServerHttpRequest mutableRequest = request.mutate()
-                    .header("username", loginUser.getUsername())
-                    .header("email", loginUser.getEmail())
-                    .header("tel", loginUser.getTel())
-                    .header("roleId", loginUser.getRole().getId())
-                    .build();
+            // 获取原始 URI
+            URI uri = exchange.getRequest().getURI();
+            // 使用 UriComponentsBuilder 动态拼接参数
+            UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(uri);
+            uriBuilder.queryParam("username", loginUser.getUsername())
+                    .queryParam("email", loginUser.getEmail())
+                    .queryParam("tel", loginUser.getTel())
+                    .queryParam("roleId", loginUser.getRole().getId());
 
-            return chain.filter(exchange.mutate().request(mutableRequest).build());
+            // 5. 构建新的请求对象
+            URI newUri = uriBuilder.build(true).toUri(); // build(true) 表示已经编码过了
+            ServerHttpRequest newRequest = exchange.getRequest().mutate().uri(newUri).build();
+
+            // 6. 放行
+            return chain.filter(exchange.mutate().request(newRequest).build());
 
         } catch (Exception e) {
             return errorResponse(exchange, HttpStatus.UNAUTHORIZED, "登录已失效");

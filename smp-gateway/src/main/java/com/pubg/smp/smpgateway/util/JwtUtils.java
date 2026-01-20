@@ -3,10 +3,13 @@ package com.pubg.smp.smpgateway.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.http.HttpStatus;
 import com.pubg.smp.smpgateway.entity.LoginUser;
 import com.pubg.smp.smpgateway.exception.TokenException;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
 
 /**
@@ -15,7 +18,8 @@ import java.util.Date;
  * @author itning
  */
 public final class JwtUtils {
-    private static final String PRIVATE_KEY = "itning";
+    private static final String PRIVATE_KEY = "com.pubg.smp.security.long_enough_secret_key_123456";
+    private static final Key KEY = Keys.hmacShaKeyFor(PRIVATE_KEY.getBytes(StandardCharsets.UTF_8));
     private static final String LOGIN_USER = "loginUser";
     private static final String DEFAULT_STR = "null";
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -27,7 +31,8 @@ public final class JwtUtils {
     public static String buildJwt(Object o) throws JsonProcessingException {
         return Jwts.builder()
                 //SECRET_KEY是加密算法对应的密钥，这里使用额是HS256加密算法
-                .signWith(SignatureAlgorithm.HS256, PRIVATE_KEY)
+//                .signWith(SignatureAlgorithm.HS256, PRIVATE_KEY)
+                .signWith(KEY)
                 //expTime是过期时间
                 .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000))
                 .claim(LOGIN_USER, MAPPER.writeValueAsString(o))
@@ -42,10 +47,9 @@ public final class JwtUtils {
         }
         try {
             //解析JWT字符串中的数据，并进行最基础的验证
-            Claims claims = Jwts.parser()
-                    //SECRET_KEY是加密算法对应的密钥，jjwt可以自动判断机密算法
-                    .setSigningKey(PRIVATE_KEY)
-                    //jwt是JWT字符串
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(KEY) //  这里的 PRIVATE_KEY 建议是 Key 对象而非 String
+                    .build()                   //  必须调用 build() 生成实例
                     .parseClaimsJws(jwt)
                     .getBody();
             //获取自定义字段key

@@ -8,20 +8,20 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import top.itning.smp.smpclass.dto.ClassComingDTO;
-import top.itning.smp.smpclass.entity.RestModel;
-import top.itning.smp.smpclass.security.LoginUser;
-import top.itning.smp.smpclass.security.MustLogin;
-import top.itning.smp.smpclass.security.MustStudentLogin;
-import top.itning.smp.smpclass.security.MustTeacherLogin;
-import top.itning.smp.smpclass.service.ClassCheckService;
+import com.pubg.smp.smpclass.dto.ClassComingDTO;
+import com.pubg.smp.smpclass.entity.RestModel;
+import com.pubg.smp.smpclass.security.LoginUser;
+import com.pubg.smp.smpclass.security.MustLogin;
+import com.pubg.smp.smpclass.security.MustStudentLogin;
+import com.pubg.smp.smpclass.security.MustTeacherLogin;
+import com.pubg.smp.smpclass.service.ClassCheckService;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 
-import static top.itning.smp.smpclass.security.MustLogin.ROLE.STUDENT;
-import static top.itning.smp.smpclass.security.MustLogin.ROLE.TEACHER;
+import static com.pubg.smp.smpclass.security.MustLogin.ROLE.STUDENT;
+import static com.pubg.smp.smpclass.security.MustLogin.ROLE.TEACHER;
 
 /**
  * @author itning

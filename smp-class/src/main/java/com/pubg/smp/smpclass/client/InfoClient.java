@@ -4,8 +4,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import top.itning.smp.smpclass.entity.StudentUser;
-import top.itning.smp.smpclass.entity.User;
+import com.pubg.smp.smpclass.entity.StudentUser;
+import com.pubg.smp.smpclass.entity.User;
 
 import java.util.Optional;
 

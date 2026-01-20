@@ -3,9 +3,9 @@ package com.pubg.smp.smpclass.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
-import top.itning.smp.smpclass.cache.FaceImgCache;
-import top.itning.smp.smpclass.config.CustomProperties;
-import top.itning.smp.smpclass.entity.Face;
+import com.pubg.smp.smpclass.cache.FaceImgCache;
+import com.pubg.smp.smpclass.config.CustomProperties;
+import com.pubg.smp.smpclass.entity.Face;
 
 import java.io.File;
 import java.util.Optional;

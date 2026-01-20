@@ -1,0 +1,235 @@
+package com.pubg.smp.smpleave.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.*;
+import com.pubg.smp.smpleave.dto.LeaveDTO;
+import com.pubg.smp.smpleave.dto.SearchDTO;
+import com.pubg.smp.smpleave.entity.Leave;
+import com.pubg.smp.smpleave.entity.LeaveType;
+import com.pubg.smp.smpleave.entity.RestModel;
+import com.pubg.smp.smpleave.security.LoginUser;
+import com.pubg.smp.smpleave.security.MustCounselorLogin;
+import com.pubg.smp.smpleave.security.MustLogin;
+import com.pubg.smp.smpleave.security.MustStudentLogin;
+import com.pubg.smp.smpleave.service.LeaveService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import static com.pubg.smp.smpleave.security.MustLogin.ROLE.COUNSELOR;
+import static com.pubg.smp.smpleave.security.MustLogin.ROLE.STUDENT;
+
+/**
+ * @author itning
+ */
+@RestController
+public class LeaveController {
+    private final LeaveService leaveService;
+
+    @Autowired
+    public LeaveController(LeaveService leaveService) {
+        this.leaveService = leaveService;
+    }
+
+    @InitBinder
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) {
+        binder.registerCustomEditor(
+                Date.class,
+                new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
+    }
+
+    /**
+     * 获取请假信息
+     *
+     * @param pageable 分页信息
+     * @return ResponseEntity
+     */
+    @GetMapping("/leaves")
+    public ResponseEntity<?> allLeaves(@PageableDefault(size = 20, sort = {"gmtModified"}, direction = Sort.Direction.DESC)
+                                               Pageable pageable,
+                                       @MustCounselorLogin LoginUser loginUser) {
+        return RestModel.ok(leaveService.getLeaves(pageable, true, loginUser));
+    }
+
+    /**
+     * 获取请假审批信息
+     *
+     * @param pageable 分页信息
+     * @return ResponseEntity
+     */
+    @GetMapping("/leaves/check")
+    public ResponseEntity<?> allCheckLeaves(@PageableDefault(size = 20, sort = {"gmtModified"}, direction = Sort.Direction.DESC)
+                                                    Pageable pageable,
+                                            @MustCounselorLogin LoginUser loginUser) {
+        return RestModel.ok(leaveService.getLeaves(pageable, null, loginUser));
+    }
+
+    /**
+     * 评论
+     *
+     * @param leaveId 请假ID
+     * @param comment 评论
+     * @return ResponseEntity
+     */
+    @PostMapping("/leave/comment")
+    public ResponseEntity<?> newComment(@RequestParam String leaveId,
+                                        @RequestParam String comment,
+                                        @MustLogin(role = {STUDENT, COUNSELOR}) LoginUser loginUser) {
+        return RestModel.created(leaveService.newComment(leaveId, comment, loginUser));
+    }
+
+    /**
+     * 搜索审批
+     *
+     * @param pageable  分页
+     * @param searchDTO 查询条件
+     * @return ResponseEntity
+     */
+    @GetMapping("/search/leaves/check")
+    public ResponseEntity<?> searchCheck(@PageableDefault(size = 20, sort = {"gmtModified"}, direction = Sort.Direction.DESC)
+                                                 Pageable pageable,
+                                         @MustCounselorLogin LoginUser loginUser,
+                                         SearchDTO searchDTO) {
+        return RestModel.ok(leaveService.search(searchDTO, pageable, null, loginUser));
+    }
+
+    /**
+     * 更改审批状态
+     *
+     * @param leaveId 请假ID
+     * @return ResponseEntity
+     */
+    @PostMapping("/leave/status")
+    public ResponseEntity<?> leaveCheckStatusChangeTrue(@RequestParam String leaveId,
+                                                        @RequestParam boolean status,
+                                                        @MustCounselorLogin LoginUser loginUser) {
+        leaveService.leaveCheckStatusChange(leaveId, status, loginUser);
+        return RestModel.noContent();
+    }
+
+    /**
+     * 新增请假信息
+     *
+     * @param startTime 请假开始时间
+     * @param endTime   请假结束时间
+     * @param reason    原因
+     * @param leaveType 请假类型
+     * @return 请假信息
+     */
+    @PostMapping("/leave")
+    public ResponseEntity<?> newLeave(@RequestParam Date startTime,
+                                      @RequestParam Date endTime,
+                                      @RequestParam String reason,
+                                      @RequestParam String leaveType,
+                                      @MustStudentLogin LoginUser loginUser) {
+        Leave leave = new Leave();
+        leave.setStartTime(startTime);
+        leave.setEndTime(endTime);
+        leave.setReason(reason);
+        leave.setLeaveType(LeaveType.valueOf(leaveType));
+        return RestModel.created(leaveService.newLeave(leave, loginUser));
+    }
+
+    /**
+     * 搜索
+     *
+     * @param pageable  分页
+     * @param searchDTO 查询条件
+     * @return ResponseEntity
+     */
+    @GetMapping("/search/leaves")
+    public ResponseEntity<?> search(@PageableDefault(size = 20, sort = {"gmtModified"}, direction = Sort.Direction.DESC)
+                                            Pageable pageable,
+                                    @MustCounselorLogin LoginUser loginUser,
+                                    SearchDTO searchDTO) {
+        return RestModel.ok(leaveService.search(searchDTO, pageable, true, loginUser));
+    }
+
+    /**
+     * 学生获取请假信息
+     *
+     * @param pageable 分页
+     * @return ResponseEntity
+     */
+    @GetMapping("/studentLeaves")
+    public ResponseEntity<?> getStudentLeaves(@PageableDefault(size = 20, sort = {"gmtModified"}, direction = Sort.Direction.DESC)
+                                                      Pageable pageable,
+                                              @MustStudentLogin LoginUser loginUser) {
+        return RestModel.ok(leaveService.getStudentLeaves(pageable, loginUser));
+    }
+
+    /**
+     * 获取正在生效的寝室请假信息数量
+     *
+     * @param username 导员用户名
+     * @return 正在生效的寝室请假信息数量
+     */
+    @GetMapping("/internal/leaves/roomInEffect/count")
+    public long roomInEffectLeaves(@RequestParam Date date, @RequestParam String username) {
+        return leaveService.countInEffectRoomLeaves(date, username);
+    }
+
+    /**
+     * 学生今天是否请假了
+     *
+     * @param userName  学生
+     * @param leaveType 请假类型 只能传课假或寝室假，默认包括全部假
+     * @return 今天请假了返回<code>true</code>
+     */
+    @GetMapping("/internal/isLeave")
+    public boolean isLeave(@RequestParam("userName") String userName, @RequestParam("leaveType") LeaveType leaveType) {
+        return leaveService.isUserLeaveToday(userName, leaveType);
+    }
+
+    /**
+     * 获取请假信息
+     *
+     * @param whereDay 哪天
+     * @param username 导员用户名，如果为空则不要这个查询条件
+     * @return 所有请假信息
+     */
+    @GetMapping("/internal/leaves")
+    public List<LeaveDTO> getAllLeave(@RequestParam("whereDay") Date whereDay,
+                                      @Nullable String username) {
+        return leaveService.getLeaves(whereDay, username);
+    }
+
+    /**
+     * 计算请假人数
+     *
+     * @param startDate 开始日期
+     * @param endDate   结束日期
+     * @param username  导员用户名，如果为空则不要这个查询条件
+     * @return 请假人数
+     */
+    @GetMapping("/internal/leave/count")
+    public long countAllLeave(@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                              @RequestParam("startDate") Date startDate,
+                              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                              @RequestParam("endDate") Date endDate,
+                              @Nullable String username) {
+        return leaveService.countAllLeave(startDate, endDate, username);
+    }
+
+    /**
+     * 删除某学生请假信息
+     *
+     * @param counselorUsername 导员用户名
+     * @param studentUserName   学生用户名
+     */
+    @PostMapping("/internal/delete")
+    public void delLeaveInfo(@RequestParam String counselorUsername,
+                             @RequestParam String studentUserName) {
+        leaveService.delLeaveInfo(counselorUsername, studentUserName);
+    }
+}

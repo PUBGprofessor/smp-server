@@ -1,0 +1,120 @@
+package com.pubg.smp.smpinfo.service;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+import com.pubg.smp.smpinfo.dto.StudentUserDTO;
+import com.pubg.smp.smpinfo.dto.UpFileDTO;
+import com.pubg.smp.smpinfo.entity.User;
+import com.pubg.smp.smpinfo.security.LoginUser;
+
+import java.io.IOException;
+import java.util.List;
+
+/**
+ * @author itning
+ */
+public interface UserService {
+    /**
+     * 获取所有用户
+     *
+     * @param pageable  分页信息
+     * @param loginUser 登录用户
+     * @return 用户
+     */
+    Page<StudentUserDTO> getAllUser(Pageable pageable, LoginUser loginUser);
+
+    /**
+     * 模糊搜索用户
+     *
+     * @param key       关键字
+     * @param pageable  分页数据
+     * @param loginUser 登录用户
+     * @return 用户
+     */
+    Page<StudentUserDTO> searchUsers(String key, Pageable pageable, LoginUser loginUser);
+
+    /**
+     * 更新用户
+     *
+     * @param studentUserDTO 用户
+     * @param loginUser      登录用户
+     */
+    void updateUser(StudentUserDTO studentUserDTO, LoginUser loginUser);
+
+    /**
+     * 删除用户
+     *
+     * @param userId    用户ID
+     * @param loginUser 登录用户
+     */
+    void delUser(String userId, LoginUser loginUser);
+
+    /**
+     * 上传文件
+     * 学生用户名为学号
+     * 密码为姓名
+     *
+     * @param file      文件
+     * @param loginUser 登录用户
+     * @return 上传信息
+     * @throws IOException 存储异常
+     */
+    UpFileDTO upFile(MultipartFile file, LoginUser loginUser) throws IOException;
+
+    /**
+     * 根据用户名获取用户
+     *
+     * @param username 用户名
+     * @return 用户
+     */
+    User getUserInfoByUserName(String username);
+
+    /**
+     * 获取用户信息
+     *
+     * @param username 用户名
+     * @return 用户信息
+     */
+    StudentUserDTO getStudentUserInfoByUserName(String username);
+
+    /**
+     * 计算学生数量
+     *
+     * @param username 导员用户名
+     * @return 学生数量
+     */
+    long countStudent(String username);
+
+    /**
+     * 获取所有用户
+     *
+     * @param username 导员用户名
+     * @return 所有用户
+     */
+    List<StudentUserDTO> getAllUser(String username);
+
+    /**
+     * 根据学号获取学生DTO
+     *
+     * @param studentId 学号
+     * @return 学生信息DTO
+     */
+    StudentUserDTO getStudentUserDtoByStudentId(String studentId);
+
+    /**
+     * 获取所有辅导员
+     *
+     * @return 所有辅导员
+     */
+    List<User> getAllCounselorUser();
+
+    /**
+     * 更改密码
+     *
+     * @param username 用户名
+     * @param newPwd   新密码
+     * @return 更改成功返回<code>true</code>
+     */
+    boolean changeUserPwd(String username, String newPwd);
+}

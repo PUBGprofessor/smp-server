@@ -1,7 +1,7 @@
 package com.pubg.smp.smpclass.client.entity;
 
 import lombok.Data;
-import top.itning.smp.smpclass.entity.StudentUser;
+import com.pubg.smp.smpclass.entity.StudentUser;
 
 import java.io.Serializable;
 import java.util.Date;

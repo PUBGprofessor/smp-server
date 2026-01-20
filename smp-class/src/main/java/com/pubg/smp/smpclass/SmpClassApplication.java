@@ -3,13 +3,16 @@ package com.pubg.smp.smpclass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.cloud.client.SpringCloudApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+
 
 /**
  * @author itning
  */
-@SpringCloudApplication
+@SpringBootApplication
+@EnableDiscoveryClient
 @EnableFeignClients
 public class SmpClassApplication {
     static {

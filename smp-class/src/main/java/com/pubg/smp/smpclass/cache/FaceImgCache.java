@@ -6,7 +6,7 @@ import com.google.common.cache.LoadingCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-import top.itning.smp.smpclass.config.CustomProperties;
+import com.pubg.smp.smpclass.config.CustomProperties;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

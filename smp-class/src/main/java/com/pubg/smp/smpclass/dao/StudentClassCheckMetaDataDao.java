@@ -4,8 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import top.itning.smp.smpclass.entity.StudentClass;
-import top.itning.smp.smpclass.entity.StudentClassCheckMetaData;
+import com.pubg.smp.smpclass.entity.StudentClass;
+import com.pubg.smp.smpclass.entity.StudentClassCheckMetaData;
 
 import java.util.List;
 

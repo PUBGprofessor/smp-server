@@ -4,8 +4,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import top.itning.smp.smpclass.client.entity.LeaveDTO;
-import top.itning.smp.smpclass.client.entity.LeaveType;
+import com.pubg.smp.smpclass.client.entity.LeaveDTO;
+import com.pubg.smp.smpclass.client.entity.LeaveType;
 
 import java.util.List;
 

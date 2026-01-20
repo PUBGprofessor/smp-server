@@ -1,8 +1,8 @@
 package com.pubg.smp.smpclass.dto;
 
 import lombok.Data;
-import top.itning.smp.smpclass.entity.StudentClass;
-import top.itning.smp.smpclass.entity.User;
+import com.pubg.smp.smpclass.entity.StudentClass;
+import com.pubg.smp.smpclass.entity.User;
 
 import java.io.Serializable;
 import java.util.Date;

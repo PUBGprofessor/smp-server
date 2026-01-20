@@ -10,10 +10,10 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import top.itning.smp.smpclass.entity.Role;
-import top.itning.smp.smpclass.exception.SecurityException;
+import com.pubg.smp.smpclass.entity.Role;
+import com.pubg.smp.smpclass.exception.SecurityException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 /**
