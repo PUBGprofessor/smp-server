@@ -41,7 +41,7 @@ public class SecurityHandlerMethodArgumentResolver implements HandlerMethodArgum
         LoginUser loginUser = new LoginUser();
         loginUser.setName(request.getParameter("name"));
         loginUser.setUsername(request.getParameter("username"));
-        loginUser.setRoleId(request.getParameter(roleId));
+        loginUser.setRoleId(roleId);
         loginUser.setEmail(request.getParameter("email"));
         loginUser.setTel(request.getParameter("tel"));
         return loginUser;
